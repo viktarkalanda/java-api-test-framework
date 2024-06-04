@@ -6,7 +6,7 @@ import io.restassured.response.Response;
 import models.PlayerDto;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.Test;
-import utils.ApiSpecs;
+import api.ApiSpecs;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

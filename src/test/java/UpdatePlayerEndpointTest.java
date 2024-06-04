@@ -10,7 +10,7 @@ import models.PlayerUpdateResponseDto;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import utils.ApiSpecs;
+import api.ApiSpecs;
 import utils.DataGenerator;
 
 import static org.assertj.core.api.Assertions.assertThat;

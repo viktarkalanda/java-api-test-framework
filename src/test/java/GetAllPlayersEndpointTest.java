@@ -8,7 +8,7 @@ import models.PlayerGetAllResponseDto;
 import models.PlayerItem;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.Test;
-import utils.ApiSpecs;
+import api.ApiSpecs;
 
 import java.util.List;
 import java.util.stream.Collectors;
