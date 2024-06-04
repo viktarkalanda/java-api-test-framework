@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "players": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "age": {
+            "type": "integer"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "role": {
+            "type": "string"
+          },
+          "screenName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "age",
+          "gender",
+          "id",
+          "role",
+          "screenName"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "players"
+  ],
+  "additionalProperties": false
+}
