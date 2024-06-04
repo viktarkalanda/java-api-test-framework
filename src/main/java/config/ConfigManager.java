@@ -1,15 +1,12 @@
 package config;
 
 import exceptions.ConfigurationLoadException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 public class ConfigManager {
-    private static final Logger logger = LoggerFactory.getLogger(ConfigManager.class);
     private static final ThreadLocal<ConfigManager> INSTANCE = ThreadLocal.withInitial(ConfigManager::new);
     private final Properties properties;
 
@@ -36,8 +33,8 @@ public class ConfigManager {
         return properties.getProperty("supervisor.login");
     }
 
-    public String getAdminLogin() {
-        return properties.getProperty("admin.login");
+    public long getApiResponseTimeout() {
+        return Long.parseLong(properties.getProperty("api.response.timeout", "5000"));
     }
 
     public static void clear() {
