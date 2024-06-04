@@ -2,6 +2,10 @@
     <test name="PlayerController Tests">
         <classes>
             <class name="CreatePlayerEndpointTest"/>
+            <class name="DeletePlayerEndpointTest"/>
+            <class name="GetAllPlayersEndpointTest"/>
+            <class name="GetPlayerEndpointTest"/>
+            <class name="UpdatePlayerEndpointTest"/>
         </classes>
     </test>
 </suite>
