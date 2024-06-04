@@ -1,0 +1,7 @@
+<suite name="PlayerController Suite">
+    <test name="PlayerController Tests">
+        <classes>
+            <class name="CreatePlayerEndpointTest"/>
+        </classes>
+    </test>
+</suite>
