@@ -1,5 +1,5 @@
 import api.PlayerApiClient;
-import dataproviders.UpdatePlayerTestDataProviders;
+import dataproviders.TestDataProviders;
 import enums.UserRole;
 import io.qameta.allure.Description;
 import io.restassured.module.jsv.JsonSchemaValidator;
@@ -41,7 +41,7 @@ public class UpdatePlayerEndpointTest extends BaseTest {
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("PlayerUpdateResponseSchema.json"));
     }
 
-    @Test(dataProvider = "supervisorUpdateRoles", dataProviderClass = UpdatePlayerTestDataProviders.class)
+    @Test(dataProvider = "userRolesProvider", dataProviderClass = TestDataProviders.class)
     @Description("Ensure the system correctly updates multiple fields of a player's data with valid permissions and verifies data integrity for supervisors")
     public void testSupervisorUpdatePlayerValid(String targetRole) {
         PlayerDto createdPlayer = createTestPlayer(targetRole);
@@ -55,7 +55,7 @@ public class UpdatePlayerEndpointTest extends BaseTest {
                 .isEqualTo(updateData);
     }
 
-    @Test(dataProvider = "selfUpdateRoles", dataProviderClass = UpdatePlayerTestDataProviders.class)
+    @Test(dataProvider = "userRolesProvider", dataProviderClass = TestDataProviders.class)
     @Description("Ensure the system allows users to update their own data")
     public void testUserCanUpdateSelf(String role) {
         PlayerDto createdPlayer = createTestPlayer(role);
@@ -69,7 +69,7 @@ public class UpdatePlayerEndpointTest extends BaseTest {
                 .isEqualTo(updateData);
     }
 
-    @Test(dataProvider = "invalidAges", dataProviderClass = UpdatePlayerTestDataProviders.class)
+    @Test(dataProvider = "invalidAges", dataProviderClass = TestDataProviders.class)
     @Description("Ensure the system rejects updates when the age is outside the allowed range")
     public void testUpdatePlayerWithInvalidAge(int age, String description) {
         log.info("Testing age constraint: {}", description);
@@ -84,7 +84,7 @@ public class UpdatePlayerEndpointTest extends BaseTest {
         assertThat(fetchedPlayer.getAge()).isEqualTo(originalPlayer.getAge());
     }
 
-    @Test(dataProvider = "invalidPasswords", dataProviderClass = UpdatePlayerTestDataProviders.class)
+    @Test(dataProvider = "invalidPasswords", dataProviderClass = TestDataProviders.class)
     @Description("Ensure the system rejects updates when the password does not meet the requirements")
     public void testUpdatePlayerWithInvalidPassword(String password, String description) {
         log.info("Testing password constraint: {}", description);
@@ -95,7 +95,7 @@ public class UpdatePlayerEndpointTest extends BaseTest {
         response.then().spec(ApiSpecs.responseSpec(HttpStatus.SC_BAD_REQUEST));
     }
 
-    @Test(dataProvider = "invalidGenders", dataProviderClass = UpdatePlayerTestDataProviders.class)
+    @Test(dataProvider = "invalidGenders", dataProviderClass = TestDataProviders.class)
     @Description("Ensure the system rejects updates with invalid gender values")
     public void testUpdatePlayerWithInvalidGender(String gender, String description) {
         log.info("Testing invalid gender update: {}", description);
@@ -106,7 +106,7 @@ public class UpdatePlayerEndpointTest extends BaseTest {
         response.then().spec(ApiSpecs.responseSpec(HttpStatus.SC_BAD_REQUEST));
     }
 
-    @Test(dataProvider = "userUpdateScenarios", dataProviderClass = UpdatePlayerTestDataProviders.class)
+    @Test(dataProvider = "userRolesProvider", dataProviderClass = TestDataProviders.class)
     @Description("Ensure users with 'user' role cannot update other players")
     public void testUserCannotUpdateOthers(String targetRole) {
         PlayerDto targetPlayer = createTestPlayer(targetRole);

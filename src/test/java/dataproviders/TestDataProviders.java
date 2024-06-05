@@ -3,21 +3,12 @@ package dataproviders;
 import enums.UserRole;
 import org.testng.annotations.DataProvider;
 
-public class UpdatePlayerTestDataProviders {
-
-    @DataProvider(name = "supervisorUpdateRoles")
-    public static Object[][] provideSupervisorUpdateRoles() {
+public class TestDataProviders {
+    @DataProvider(name = "userRolesProvider")
+    public static Object[][] provideUserRoles() {
         return new Object[][]{
                 {UserRole.USER.getRole()},
                 {UserRole.ADMIN.getRole()}
-        };
-    }
-
-    @DataProvider(name = "selfUpdateRoles")
-    public static Object[][] provideSelfUpdateRoles() {
-        return new Object[][]{
-                {UserRole.ADMIN.getRole()},
-                {UserRole.USER.getRole()}
         };
     }
 
@@ -49,11 +40,20 @@ public class UpdatePlayerTestDataProviders {
         };
     }
 
-    @DataProvider(name = "userUpdateScenarios")
-    public static Object[][] provideUserUpdateScenarios() {
+    @DataProvider(name = "unsupportedRoles")
+    public Object[][] provideUnsupportedRoles() {
         return new Object[][]{
-                {UserRole.USER.getRole()},
-                {UserRole.ADMIN.getRole()}
+                {"guest"},
+                {"supervisor"},
+                {"manager"}
+        };
+    }
+
+    @DataProvider(name = "validGenders")
+    public Object[][] provideValidGenders() {
+        return new Object[][]{
+                {"male"},
+                {"female"}
         };
     }
 }

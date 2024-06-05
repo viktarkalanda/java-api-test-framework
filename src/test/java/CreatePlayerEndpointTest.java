@@ -1,5 +1,5 @@
 import api.PlayerApiClient;
-import dataproviders.CreatePlayerTestDataProviders;
+import dataproviders.TestDataProviders;
 import enums.UserRole;
 import io.qameta.allure.Description;
 import io.restassured.module.jsv.JsonSchemaValidator;
@@ -39,7 +39,7 @@ public class CreatePlayerEndpointTest extends BaseTest {
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("CreatePlayerSchema.json"));
     }
 
-    @Test(dataProvider = "ageValidationScenarios", dataProviderClass = CreatePlayerTestDataProviders.class)
+    @Test(dataProvider = "invalidAges", dataProviderClass = TestDataProviders.class)
     @Description("Ensure the system properly handles age constraints during user creation")
     public void testAgeConstraints(int age, String scenarioDescription) {
         log.info("Testing age constraint: {}", scenarioDescription);
@@ -51,7 +51,7 @@ public class CreatePlayerEndpointTest extends BaseTest {
                 .statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 
-    @Test(dataProvider = "unsupportedRoles", dataProviderClass = CreatePlayerTestDataProviders.class)
+    @Test(dataProvider = "unsupportedRoles", dataProviderClass = TestDataProviders.class)
     @Description("Ensure the system rejects user creation with roles that are not supported or allowed")
     public void testCreationWithUnsupportedRoles(String role) {
         PlayerDto playerData = DataGenerator.generatePlayer(role);
@@ -87,7 +87,7 @@ public class CreatePlayerEndpointTest extends BaseTest {
         secondResponse.then().spec(ApiSpecs.responseSpec(HttpStatus.SC_BAD_REQUEST));
     }
 
-    @Test(dataProvider = "invalidPasswords", dataProviderClass = CreatePlayerTestDataProviders.class)
+    @Test(dataProvider = "invalidPasswords", dataProviderClass = TestDataProviders.class)
     @Description("Ensure the system rejects user creation with an invalid password")
     public void testPasswordValidation(String password, String errorMessage) {
         PlayerDto playerData = DataGenerator.generatePlayer(UserRole.USER.getRole());
@@ -97,7 +97,7 @@ public class CreatePlayerEndpointTest extends BaseTest {
         response.then().spec(ApiSpecs.responseSpec(HttpStatus.SC_BAD_REQUEST));
     }
 
-    @Test(dataProvider = "validGenders", dataProviderClass = CreatePlayerTestDataProviders.class)
+    @Test(dataProvider = "validGenders", dataProviderClass = TestDataProviders.class)
     @Description("Ensure the system allows user creation with valid genders 'male' and 'female'")
     public void testCreatePlayerWithValidGender(String gender) {
         PlayerDto playerData = DataGenerator.generatePlayer(UserRole.USER.getRole());
@@ -106,16 +106,17 @@ public class CreatePlayerEndpointTest extends BaseTest {
         response.then().spec(ApiSpecs.responseSpec(HttpStatus.SC_OK));
     }
 
-    @Test(dataProvider = "invalidGenders", dataProviderClass = CreatePlayerTestDataProviders.class)
+    @Test(dataProvider = "invalidGenders", dataProviderClass = TestDataProviders.class)
     @Description("Ensure the system rejects user creation with an invalid gender")
-    public void testCreatePlayerWithInvalidGender(String gender) {
+    public void testCreatePlayerWithInvalidGender(String gender, String description) {
+        log.info("Testing invalid gender update: {}", description);
         PlayerDto playerData = DataGenerator.generatePlayer(UserRole.USER.getRole());
         playerData.setGender(gender);
         Response response = playerApiClient.createPlayer(SUPERVISOR_LOGIN, playerData);
         response.then().spec(ApiSpecs.responseSpec(HttpStatus.SC_BAD_REQUEST));
     }
 
-    @Test(dataProvider = "adminRoleEditorProvider", dataProviderClass = CreatePlayerTestDataProviders.class)
+    @Test(dataProvider = "userRolesProvider", dataProviderClass = TestDataProviders.class)
     @Description("Test to ensure that the admin can create both admin and user roles correctly")
     public void testAdminCreatePlayerDataValidation(String targetRole) {
         PlayerDto playerData = DataGenerator.generatePlayer(targetRole);
@@ -131,7 +132,7 @@ public class CreatePlayerEndpointTest extends BaseTest {
                 .isEqualTo(playerData);
     }
 
-    @Test(dataProvider = "userRoleCreationScenarios", dataProviderClass = CreatePlayerTestDataProviders.class)
+    @Test(dataProvider = "userRolesProvider", dataProviderClass = TestDataProviders.class)
     @Description("Ensure that a user with 'user' role cannot create other users with different roles")
     public void testUserCannotCreateOtherRoles(String targetRole) {
         PlayerDto playerData = DataGenerator.generatePlayer(targetRole);

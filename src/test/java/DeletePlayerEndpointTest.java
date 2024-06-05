@@ -1,11 +1,11 @@
 import api.PlayerApiClient;
+import dataproviders.TestDataProviders;
 import enums.UserRole;
 import io.qameta.allure.Description;
 import io.restassured.response.Response;
 import models.PlayerDto;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import api.ApiSpecs;
 
@@ -22,7 +22,7 @@ public class DeletePlayerEndpointTest extends BaseTest {
         adminEditor = createTestPlayer(UserRole.ADMIN.getRole());
     }
 
-    @Test(dataProvider = "supervisorDeleteScenarios")
+    @Test(dataProvider = "userRolesProvider", dataProviderClass = TestDataProviders.class)
     @Description("Ensure that the system correctly deletes a player when requested by an authorized supervisor")
     public void testSupervisorDeletePlayerSuccessfully(String targetRole) {
         long playerId = createTestPlayer(targetRole).getId();
@@ -32,7 +32,7 @@ public class DeletePlayerEndpointTest extends BaseTest {
         getResponse.then().spec(ApiSpecs.responseSpec(HttpStatus.SC_NOT_FOUND));
     }
 
-    @Test(dataProvider = "invalidDeleteScenarios")
+    @Test(dataProvider = "userRolesProvider", dataProviderClass = TestDataProviders.class)
     @Description("Ensure that a user with 'user' role cannot delete other users")
     public void testUserCannotDeleteOtherRoles(String targetRole) {
         PlayerDto targetPlayer = createTestPlayer(targetRole);
@@ -57,27 +57,12 @@ public class DeletePlayerEndpointTest extends BaseTest {
         Response getResponse = playerApiClient.getPlayerByPlayerId(userToBeDeleted.getId());
         getResponse.then().spec(ApiSpecs.responseSpec(HttpStatus.SC_NOT_FOUND));
     }
+
     @Test
     @Description("Ensure that a user cannot delete themselves")
     public void testUserCannotDeleteSelf() {
         PlayerDto userEditor = createTestPlayer(UserRole.USER.getRole());
         Response response = playerApiClient.deletePlayer(userEditor.getLogin(), userEditor.getId());
         response.then().spec(ApiSpecs.responseSpec(HttpStatus.SC_FORBIDDEN));
-    }
-
-    @DataProvider(name = "invalidDeleteScenarios")
-    public Object[][] provideInvalidDeleteScenarios() {
-        return new Object[][]{
-                {UserRole.USER.getRole()},
-                {UserRole.ADMIN.getRole()}
-        };
-    }
-
-    @DataProvider(name = "supervisorDeleteScenarios")
-    public Object[][] provideSupervisorDeleteScenarios() {
-        return new Object[][]{
-                {UserRole.USER.getRole()},
-                {UserRole.ADMIN.getRole()}
-        };
     }
 }
